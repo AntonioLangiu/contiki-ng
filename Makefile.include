@@ -45,14 +45,18 @@ TARGET_BOARD_UPPERCASE := ${strip ${shell echo $(BOARD) | sed y!$(LOWERCASE)!$(U
 CFLAGS += -DCONTIKI_BOARD_$(TARGET_BOARD_UPPERCASE)=1
 endif
 
-MODULES += os os/sys os/dev os/lib os/services
+MODULES += os os/core os/sys os/dev os/lib os/services
 
 # Automatically include project-conf.h if found
 ifneq ("$(wildcard project-conf.h)","")
 CFLAGS += -DPROJECT_CONF_PATH=\"project-conf.h\"
 endif
 
-MODULES += os os/net os/net/mac os/storage
+MODULES += os os/core os/net os/net/mac os/storage
+
+ifneq ($(DISABLE_MAIN),1)
+	MODULES += os/main
+endif
 
 oname = ${patsubst %.c,%.o,${patsubst %.S,%.o,$(1)}}
 
